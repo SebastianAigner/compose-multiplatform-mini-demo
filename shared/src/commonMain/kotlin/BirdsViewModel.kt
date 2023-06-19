@@ -16,14 +16,14 @@ class BirdsViewModel {
 
     private val _allImages = MutableStateFlow<List<BirdImage>>(emptyList())
 
-    val selectedImages = selectedCategory.map { category ->
-        _allImages.value.filter {
-            it.type == category
+    val selectedImages = selectedCategory.map { selectedCat ->
+        _allImages.value.filter { image ->
+            image.category == selectedCat
         }
     }
 
     val categories = _allImages.map { images ->
-        images.map { it.type }.toSet()
+        images.map { it.category }.toSet()
     }
 
     suspend fun getImages() {
