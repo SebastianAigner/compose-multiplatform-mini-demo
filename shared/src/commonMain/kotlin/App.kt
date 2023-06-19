@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import model.BirdImage
-import model.BirdsViewModel
 
 @Composable
 fun BirdAppTheme(
@@ -55,8 +54,8 @@ fun App() {
 
 @Composable
 fun BirdsPage(viewModel: BirdsViewModel) {
-    val imageList by viewModel.images.collectAsState()
-    val categories by viewModel.categories.collectAsState()
+    val imageList by viewModel.selectedImages.collectAsState(emptyList())
+    val categories by viewModel.categories.collectAsState(emptyList())
     LaunchedEffect(Unit) {
         viewModel.getImages()
     }
