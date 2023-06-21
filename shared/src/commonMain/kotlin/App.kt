@@ -33,11 +33,11 @@ fun BirdAppTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = MaterialTheme.colors.copy(primary = Color.Black, background = Color.Black),
+        colors = MaterialTheme.colors.copy(primary = Color.Black),
         shapes = MaterialTheme.shapes.copy(
-            AbsoluteCutCornerShape(0.dp),
-            AbsoluteCutCornerShape(0.dp),
-            AbsoluteCutCornerShape(0.dp),
+            small = AbsoluteCutCornerShape(0.dp),
+            medium = AbsoluteCutCornerShape(0.dp),
+            large = AbsoluteCutCornerShape(0.dp),
         ),
     ) {
         content()
