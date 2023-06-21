@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +47,7 @@ fun BirdAppTheme(
 @Composable
 fun App() {
     BirdAppTheme {
-        val vm = remember { BirdsViewModel() }
+        val vm = rememberSaveable(saver = BirdsViewModel.saver) { BirdsViewModel() }
         BirdsPage(vm)
     }
 }
@@ -57,7 +57,7 @@ fun BirdsPage(viewModel: BirdsViewModel) {
     val imageList by viewModel.selectedImages.collectAsState(emptyList())
     val categories by viewModel.categories.collectAsState(emptyList())
     LaunchedEffect(Unit) {
-        viewModel.getImages()
+        viewModel.updateImages()
     }
     Column(
         Modifier.fillMaxSize(),
