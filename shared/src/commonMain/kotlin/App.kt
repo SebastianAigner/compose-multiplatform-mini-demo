@@ -18,12 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.mvvm.compose.getViewModel
+import dev.icerock.moko.mvvm.compose.viewModelFactory
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import model.BirdImage
@@ -47,8 +48,8 @@ fun BirdAppTheme(
 @Composable
 fun App() {
     BirdAppTheme {
-        val vm = rememberSaveable(saver = BirdsViewModel.saver) { BirdsViewModel() }
-        BirdsPage(vm)
+        val v = getViewModel(Unit, viewModelFactory { BirdsViewModel() })
+        BirdsPage(v)
     }
 }
 
