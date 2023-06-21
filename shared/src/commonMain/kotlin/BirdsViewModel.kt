@@ -35,6 +35,7 @@ class BirdsViewModel {
         scope.launch {
             _allImages.collect { updateSelectedImages() }
         }
+        updateImages()
     }
 
     val categories = _allImages.map { images ->
@@ -59,7 +60,6 @@ class BirdsViewModel {
             mapOf("category" to it.selectedCategory.value)
         }, restore = { saved ->
             BirdsViewModel().apply {
-                updateImages()
                 selectCategory(saved["category"] as String)
             }
         })
