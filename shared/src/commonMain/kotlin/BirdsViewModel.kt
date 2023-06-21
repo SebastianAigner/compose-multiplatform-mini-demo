@@ -22,11 +22,12 @@ class BirdsViewModel {
 
     private val _allImages = MutableStateFlow<List<BirdImage>>(emptyList())
 
-    val selectedImages = MutableStateFlow<List<BirdImage>>(emptyList())
+    private val _selectedImages = MutableStateFlow<List<BirdImage>>(emptyList())
+    val selectedImages = _selectedImages.asStateFlow()
 
     init {
         fun updateSelectedImages() {
-            selectedImages.value =
+            _selectedImages.value =
                 _allImages.value.filter { pic -> pic.category == selectedCategory.value }
         }
         scope.launch {
