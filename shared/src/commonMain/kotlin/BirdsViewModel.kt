@@ -8,39 +8,28 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import model.BirdImage
+
+data class BirdsUiState(
+    val categories: Set<String> = emptySet(),
+    val selectedCategory: String? = null,
+    val images: List<BirdImage> = emptyList(),
+) {
+    val selectedImages = images.filter { it.category == selectedCategory }
+}
 
 class BirdsViewModel {
     val scope = CoroutineScope(SupervisorJob())
 
+    private val _uiState = MutableStateFlow<BirdsUiState>(BirdsUiState())
+    val uiState = _uiState.asStateFlow()
+
     val httpClient = HttpClient { install(ContentNegotiation) { json() } }
 
-    private val _selectedCategory = MutableStateFlow<String?>(null)
-    val selectedCategory = _selectedCategory.asStateFlow()
-
-    private val _allImages = MutableStateFlow<List<BirdImage>>(emptyList())
-
-    private val _selectedImages = MutableStateFlow<List<BirdImage>>(emptyList())
-    val selectedImages = _selectedImages.asStateFlow()
-
     init {
-        fun updateSelectedImages() {
-            _selectedImages.value =
-                _allImages.value.filter { pic -> pic.category == selectedCategory.value }
-        }
-        scope.launch {
-            selectedCategory.collect { updateSelectedImages() }
-        }
-        scope.launch {
-            _allImages.collect { updateSelectedImages() }
-        }
         updateImages()
-    }
-
-    val categories = _allImages.map { images ->
-        images.map { it.category }.toSet()
     }
 
     // https://developer.android.com/kotlin/coroutines/coroutines-best-practices#viewmodel-coroutines
@@ -49,16 +38,23 @@ class BirdsViewModel {
             .get("https://sebastianaigner.github.io/demo-image-api/pictures.json")
             .body<List<BirdImage>>()
 
-        _allImages.value = images
+        _uiState.update {
+            it.copy(
+                categories = images.map { it.category }.toSet(),
+                images = images
+            )
+        }
     }
 
     fun selectCategory(category: String) {
-        _selectedCategory.value = category
+        _uiState.update {
+            it.copy(selectedCategory = category)
+        }
     }
 
     companion object {
         val saver = mapSaver(save = {
-            mapOf("category" to it.selectedCategory.value)
+            mapOf("category" to it._uiState.value.selectedCategory)
         }, restore = { saved ->
             BirdsViewModel().apply {
                 selectCategory(saved["category"] as String)

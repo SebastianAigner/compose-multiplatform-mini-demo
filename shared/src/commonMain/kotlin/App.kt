@@ -54,8 +54,7 @@ fun App() {
 
 @Composable
 fun BirdsPage(viewModel: BirdsViewModel) {
-    val imageList by viewModel.selectedImages.collectAsState(emptyList())
-    val categories by viewModel.categories.collectAsState(emptyList())
+    val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.updateImages()
     }
@@ -68,7 +67,7 @@ fun BirdsPage(viewModel: BirdsViewModel) {
             Modifier.fillMaxWidth().padding(5.dp),
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            for (category in categories) {
+            for (category in uiState.categories) {
                 Button(
                     modifier = Modifier.aspectRatio(1.0f).fillMaxSize().weight(1.0f),
                     elevation = ButtonDefaults.elevation(
@@ -82,13 +81,13 @@ fun BirdsPage(viewModel: BirdsViewModel) {
                 }
             }
         }
-        AnimatedVisibility(imageList.isNotEmpty()) {
+        AnimatedVisibility(uiState.selectedImages.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 content = {
-                    items(imageList) { photo ->
+                    items(uiState.selectedImages) { photo ->
                         BirdImageCell(photo)
                     }
                 },
