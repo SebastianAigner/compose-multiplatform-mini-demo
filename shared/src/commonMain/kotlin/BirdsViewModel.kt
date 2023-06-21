@@ -1,5 +1,6 @@
 import androidx.compose.runtime.saveable.mapSaver
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -19,7 +20,7 @@ data class BirdsUiState(
     val selectedImages = images.filter { it.category == selectedCategory }
 }
 
-class BirdsViewModel : ViewModel() {
+class BirdsViewModel : ScreenModel {
 
     private val _uiState = MutableStateFlow<BirdsUiState>(BirdsUiState())
     val uiState = _uiState.asStateFlow()
@@ -31,7 +32,7 @@ class BirdsViewModel : ViewModel() {
     }
 
     // https://developer.android.com/kotlin/coroutines/coroutines-best-practices#viewmodel-coroutines
-    fun updateImages() = viewModelScope.launch {
+    fun updateImages() = coroutineScope.launch {
         val images = httpClient
             .get("https://sebastianaigner.github.io/demo-image-api/pictures.json")
             .body<List<BirdImage>>()

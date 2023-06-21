@@ -23,8 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.mvvm.compose.getViewModel
-import dev.icerock.moko.mvvm.compose.viewModelFactory
+import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.Navigator
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import model.BirdImage
@@ -45,11 +46,18 @@ fun BirdAppTheme(
     }
 }
 
+class HomeScreen : Screen {
+    @Composable
+    override fun Content() {
+        val vv = rememberScreenModel { BirdsViewModel() }
+        BirdsPage(vv)
+    }
+
+}
 @Composable
 fun App() {
     BirdAppTheme {
-        val v = getViewModel(Unit, viewModelFactory { BirdsViewModel() })
-        BirdsPage(v)
+        Navigator(HomeScreen())
     }
 }
 
